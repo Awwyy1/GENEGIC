@@ -1,8 +1,19 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Zap, MousePointer2 } from "lucide-react";
+import { ArrowRight, Zap, Sparkles } from "lucide-react";
 
 const HeroSection = () => {
+  const [prompt, setPrompt] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (prompt.trim()) {
+      console.log("Creating site with prompt:", prompt);
+      // Here would be the AI generation logic
+    }
+  };
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
       {/* Background glow effects */}
@@ -44,7 +55,7 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 font-heading"
           >
             Превращайте идеи в{" "}
             <span className="gradient-text">готовые сайты</span>
@@ -62,29 +73,68 @@ const HeroSection = () => {
             Никакого кода, никаких сложных настроек. Просто магия.
           </motion.p>
 
-          {/* CTA Buttons */}
-          <motion.div
+          {/* Input Field */}
+          <motion.form
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 0.8 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            onSubmit={handleSubmit}
+            className="max-w-2xl mx-auto mb-8"
           >
-            <Button variant="hero" size="xl" className="group">
-              Создать сайт бесплатно
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
-            <Button variant="heroOutline" size="xl">
-              <MousePointer2 className="w-5 h-5" />
-              Посмотреть демо
-            </Button>
+            <div className="relative group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-[hsl(175,80%,50%)] to-[hsl(200,90%,55%)] rounded-2xl opacity-20 group-hover:opacity-40 blur-lg transition-all duration-500" />
+              <div className="relative flex items-center gap-2 p-2 rounded-xl glass border border-[hsl(175,80%,50%,0.2)] group-hover:border-[hsl(175,80%,50%,0.4)] transition-colors">
+                <Sparkles className="w-5 h-5 text-primary ml-4 flex-shrink-0" />
+                <input
+                  type="text"
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  placeholder="Опишите сайт, который хотите создать..."
+                  className="flex-1 bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground py-3 px-2 text-base"
+                />
+                <Button 
+                  type="submit" 
+                  variant="hero" 
+                  size="lg"
+                  className="group/btn flex-shrink-0"
+                  disabled={!prompt.trim()}
+                >
+                  Создать
+                  <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                </Button>
+              </div>
+            </div>
+          </motion.form>
+
+          {/* Example prompts */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.9, duration: 0.8 }}
+            className="flex flex-wrap items-center justify-center gap-2 mb-12"
+          >
+            <span className="text-sm text-muted-foreground">Попробуйте:</span>
+            {[
+              "Лендинг для стартапа",
+              "Интернет-магазин",
+              "Портфолио дизайнера"
+            ].map((example, index) => (
+              <button
+                key={index}
+                onClick={() => setPrompt(example)}
+                className="text-sm px-3 py-1.5 rounded-full glass text-muted-foreground hover:text-foreground hover:bg-[hsl(175,80%,50%,0.1)] transition-all"
+              >
+                {example}
+              </button>
+            ))}
           </motion.div>
 
           {/* Stats */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9, duration: 0.8 }}
-            className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 mt-16 pt-8 border-t border-border"
+            transition={{ delay: 1.1, duration: 0.8 }}
+            className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 pt-8 border-t border-border"
           >
             {[
               { value: "50K+", label: "Созданных сайтов" },
@@ -92,7 +142,7 @@ const HeroSection = () => {
               { value: "99.9%", label: "Время работы" },
             ].map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold gradient-text">{stat.value}</div>
+                <div className="text-2xl sm:text-3xl font-bold gradient-text font-heading">{stat.value}</div>
                 <div className="text-sm text-muted-foreground">{stat.label}</div>
               </div>
             ))}
