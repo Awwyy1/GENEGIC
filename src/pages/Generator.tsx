@@ -258,10 +258,10 @@ const Generator = () => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className={`flex flex-col ${generatedCode ? "w-1/2 border-r border-border" : "w-full"} transition-all duration-300`}
+          className={`flex flex-col ${generatedCode ? "w-1/2 border-r border-border" : "w-full"} transition-all duration-300 min-h-0`}
         >
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
             {messages.length === 0 && (
               <div className="h-full flex items-center justify-center">
                 <div className="text-center max-w-md">
