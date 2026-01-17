@@ -305,8 +305,19 @@ const Generator = () => {
                   }`}
                 >
                   <div className="whitespace-pre-wrap text-sm">
-                    {message.role === "assistant" 
-                      ? message.content.replace(/```html[\s\S]*?```/g, "[Код сайта сгенерирован - смотрите превью справа]")
+                    {message.role === "assistant"
+                      ? (() => {
+                          // Убираем HTML блоки и показываем только описание
+                          const textBeforeCode = message.content.split('```')[0];
+                          const hasCode = message.content.includes('```html');
+
+                          if (hasCode && textBeforeCode.trim()) {
+                            return textBeforeCode.trim() + '\n\n✨ Сайт готов! Смотрите превью справа →';
+                          } else if (hasCode) {
+                            return '✨ Сайт создан! Смотрите превью справа →';
+                          }
+                          return message.content;
+                        })()
                       : message.content
                     }
                   </div>
