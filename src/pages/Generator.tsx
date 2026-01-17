@@ -39,18 +39,7 @@ const Generator = () => {
     return codeMatch ? codeMatch[1].trim() : null;
   };
 
-  // Update preview when code changes
-  useEffect(() => {
-    if (generatedCode && iframeRef.current) {
-      const iframe = iframeRef.current;
-      const doc = iframe.contentDocument || iframe.contentWindow?.document;
-      if (doc) {
-        doc.open();
-        doc.write(generatedCode);
-        doc.close();
-      }
-    }
-  }, [generatedCode, showPreview]);
+  // No need for useEffect to update iframe - we use srcdoc attribute instead
 
   const sendMessage = useCallback(async (messageText?: string) => {
     const textToSend = messageText || input;
@@ -373,7 +362,8 @@ const Generator = () => {
               ref={iframeRef}
               className="flex-1 w-full"
               title="Site Preview"
-              sandbox="allow-scripts"
+              sandbox="allow-scripts allow-same-origin"
+              srcDoc={generatedCode || ""}
             />
           </motion.div>
         )}
