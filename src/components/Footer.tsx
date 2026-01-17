@@ -1,30 +1,27 @@
 import { Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const footerLinks = {
   product: {
     title: "Продукт",
     links: [
-      { name: "Возможности", href: "#features" },
-      { name: "Тарифы", href: "#pricing" },
-      { name: "Шаблоны", href: "#" },
-      { name: "Интеграции", href: "#" }
+      { name: "Возможности", href: "/#features" },
+      { name: "Промпты", href: "/prompts" },
+      { name: "Тарифы", href: "/#pricing" },
     ]
   },
   company: {
     title: "Компания",
     links: [
-      { name: "О нас", href: "#" },
-      { name: "Блог", href: "#" },
-      { name: "Карьера", href: "#" },
-      { name: "Контакты", href: "#" }
+      { name: "О нас", href: "/about" },
+      { name: "Контакты", href: "/contact" },
     ]
   },
   legal: {
     title: "Правовая информация",
     links: [
-      { name: "Политика конфиденциальности", href: "#" },
-      { name: "Условия использования", href: "#" },
-      { name: "Cookie", href: "#" }
+      { name: "Политика конфиденциальности", href: "/privacy" },
+      { name: "Условия использования", href: "/terms" },
     ]
   }
 };
@@ -54,12 +51,21 @@ const Footer = () => {
               <ul className="space-y-2">
                 {section.links.map((link, linkIndex) => (
                   <li key={linkIndex}>
-                    <a 
-                      href={link.href} 
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      {link.name}
-                    </a>
+                    {link.href.startsWith('/#') ? (
+                      <a
+                        href={link.href}
+                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {link.name}
+                      </a>
+                    ) : (
+                      <Link
+                        to={link.href}
+                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {link.name}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
