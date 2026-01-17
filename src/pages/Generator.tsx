@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Send, Copy, Download, Check, Loader2, ExternalLink, Code, Eye, Sparkles } from "lucide-react";
+import { ArrowLeft, Send, Copy, Download, Check, Loader2, ExternalLink, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
@@ -21,7 +21,6 @@ const Generator = () => {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [generatedCode, setGeneratedCode] = useState<string | null>(null);
-  const [showPreview, setShowPreview] = useState(false);
   const [copied, setCopied] = useState(false);
   const [hasAutoSent, setHasAutoSent] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
@@ -153,7 +152,6 @@ const Generator = () => {
         const code = extractCode(assistantContent);
         if (code) {
           setGeneratedCode(code);
-          setShowPreview(true);
           // Увеличиваем счетчик использованных генераций
           incrementUsage();
           toast.success(`Сайт создан! Осталось генераций: ${generationsLeft - 1}`);
@@ -237,15 +235,6 @@ const Generator = () => {
 
           {generatedCode && (
             <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowPreview(!showPreview)}
-                className="gap-2"
-              >
-                {showPreview ? <Code className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                {showPreview ? "Показать чат" : "Показать превью"}
-              </Button>
               <Button variant="ghost" size="sm" onClick={copyCode} className="gap-2">
                 {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                 Копировать
@@ -269,7 +258,7 @@ const Generator = () => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className={`flex flex-col ${showPreview ? "w-1/2 border-r border-border" : "w-full"} transition-all duration-300`}
+          className={`flex flex-col ${generatedCode ? "w-1/2 border-r border-border" : "w-full"} transition-all duration-300`}
         >
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -365,7 +354,7 @@ const Generator = () => {
         </motion.div>
 
         {/* Preview section */}
-        {showPreview && (
+        {generatedCode && (
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}

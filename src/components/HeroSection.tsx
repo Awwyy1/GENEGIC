@@ -57,11 +57,11 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 font-heading"
+            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6 font-heading"
           >
-            Превращайте идеи в{" "}
-            <span className="gradient-text">готовые сайты</span>
-            <br />за считанные минуты
+            Создай свой сайт
+            <br />
+            <span className="gradient-text">За считанные секунды</span>
           </motion.h1>
 
           {/* Subtitle */}
@@ -69,9 +69,9 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.8 }}
-            className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10"
+            className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 font-sans"
           >
-            Опишите свой сайт на русском языке — наш ИИ создаст его за вас. 
+            Опишите свой сайт на русском языке — наш ИИ создаст его за вас.
             Никакого кода, никаких сложных настроек. Просто магия.
           </motion.p>
 
