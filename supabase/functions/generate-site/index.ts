@@ -12,11 +12,11 @@ serve(async (req) => {
 
   try {
     const { messages } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    
-    if (!LOVABLE_API_KEY) {
-      console.error("LOVABLE_API_KEY is not configured");
-      throw new Error("LOVABLE_API_KEY is not configured");
+    const GOOGLE_AI_KEY = Deno.env.get("GOOGLE_AI_KEY");
+
+    if (!GOOGLE_AI_KEY) {
+      console.error("GOOGLE_AI_KEY is not configured");
+      throw new Error("GOOGLE_AI_KEY is not configured");
     }
 
     console.log("Generating site with messages:", JSON.stringify(messages));
@@ -38,48 +38,141 @@ serve(async (req) => {
 
 ВАЖНО: Код должен быть полностью готовым к использованию, с DOCTYPE, всеми мета-тегами и т.д.`;
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
-        messages: [
-          { role: "system", content: systemPrompt },
-          ...messages,
-        ],
-        stream: true,
-      }),
-    });
+    // Формируем контент для Gemini API
+    let conversationText = systemPrompt + "\n\n";
+
+    // Добавляем историю сообщений
+    for (const msg of messages) {
+      if (msg.role === "user") {
+        conversationText += `Пользователь: ${msg.content}\n\n`;
+      } else if (msg.role === "assistant") {
+        conversationText += `Ассистент: ${msg.content}\n\n`;
+      }
+    }
+
+    // API Google Gemini
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:streamGenerateContent?key=${GOOGLE_AI_KEY}&alt=sse`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: conversationText
+                }
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 8192,
+          }
+        })
+      }
+    );
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("AI gateway error:", response.status, errorText);
-      
+      console.error("Google AI error:", response.status, errorText);
+
       if (response.status === 429) {
         return new Response(
           JSON.stringify({ error: "Слишком много запросов. Пожалуйста, подождите немного." }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
-      if (response.status === 402) {
+      if (response.status === 403) {
         return new Response(
-          JSON.stringify({ error: "Необходимо пополнить баланс для использования ИИ." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          JSON.stringify({ error: "Ошибка API ключа. Проверьте конфигурацию." }),
+          { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
-      
+
       return new Response(
         JSON.stringify({ error: "Ошибка генерации. Попробуйте ещё раз." }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    console.log("Successfully connected to AI gateway, streaming response...");
+    console.log("Successfully connected to Google AI, streaming response...");
 
-    return new Response(response.body, {
+    // Преобразуем SSE от Gemini в формат OpenAI для совместимости с фронтендом
+    const reader = response.body?.getReader();
+    const encoder = new TextEncoder();
+    const decoder = new TextDecoder();
+
+    const stream = new ReadableStream({
+      async start(controller) {
+        try {
+          if (!reader) {
+            throw new Error("No response body");
+          }
+
+          let buffer = "";
+
+          while (true) {
+            const { done, value } = await reader.read();
+
+            if (done) {
+              controller.close();
+              break;
+            }
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+
+            // Оставляем последнюю неполную строку в буфере
+            buffer = lines.pop() || "";
+
+            for (const line of lines) {
+              if (line.startsWith("data: ")) {
+                const jsonStr = line.slice(6);
+
+                if (jsonStr.trim() === "[DONE]") {
+                  continue;
+                }
+
+                try {
+                  const data = JSON.parse(jsonStr);
+
+                  // Извлекаем текст из Gemini формата
+                  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+
+                  if (text) {
+                    // Преобразуем в OpenAI формат для совместимости
+                    const openaiFormat = {
+                      choices: [
+                        {
+                          delta: {
+                            content: text
+                          }
+                        }
+                      ]
+                    };
+
+                    controller.enqueue(
+                      encoder.encode(`data: ${JSON.stringify(openaiFormat)}\n\n`)
+                    );
+                  }
+                } catch (e) {
+                  console.error("Error parsing SSE line:", e);
+                }
+              }
+            }
+          }
+        } catch (error) {
+          console.error("Stream error:", error);
+          controller.error(error);
+        }
+      }
+    });
+
+    return new Response(stream, {
       headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
     });
   } catch (error) {

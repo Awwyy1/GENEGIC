@@ -1,73 +1,77 @@
-# Welcome to your Lovable project
+# GENEGIC - AI Генератор Сайтов
 
-## Project info
+**Создай профессиональный сайт за 30 секунд с помощью AI**
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## 🚀 Что это?
 
-## How can I edit this code?
+GENEGIC - это мощный AI-генератор, который создаёт готовые к использованию сайты на основе вашего описания.
 
-There are several ways of editing your application.
+**Просто опиши что нужно → получи готовый HTML код**
 
-**Use Lovable**
+## ✨ Возможности
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+- 🤖 **AI-генерация** на основе Google Gemini 3
+- 🎨 **Современный дизайн** с градиентами и анимациями
+- 📱 **Адаптивная вёрстка** для всех устройств
+- ⚡ **Мгновенный preview** прямо в браузере
+- 💾 **Скачивание** готового HTML файла
+- 📋 **Копирование** кода в один клик
+- 🔄 **Итерации** - редактируй через чат
 
-Changes made via Lovable will be committed automatically to this repo.
+## 💰 Тарифы
 
-**Use your preferred IDE**
+- **FREE**: 3 генерации в день
+- **PRO**: 200 генераций/месяц - скоро
+- **BUSINESS**: безлимит - скоро
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 🛠️ Технологии
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- **Frontend**: React 18 + TypeScript + Vite
+- **UI**: shadcn/ui + Tailwind CSS
+- **Backend**: Supabase Edge Functions
+- **AI**: Google Gemini 3 Flash
+- **Анимации**: Framer Motion
 
-Follow these steps:
+## 🏃 Локальная разработка
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+```bash
+# Установка зависимостей
+npm install
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Запуск dev сервера
 npm run dev
+
+# Build для production
+npm run build
+
+# Тесты
+npm run test
 ```
 
-**Edit a file directly in GitHub**
+## 📦 Переменные окружения
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Создайте файл `.env`:
 
-**Use GitHub Codespaces**
+```bash
+VITE_SUPABASE_PROJECT_ID=your_project_id
+VITE_SUPABASE_PUBLISHABLE_KEY=your_public_key
+VITE_SUPABASE_URL=your_supabase_url
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🚀 Деплой
 
-## What technologies are used for this project?
+```bash
+# Production build
+npm run build
 
-This project is built with:
+# Deploy на Vercel/Netlify
+vercel --prod
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 📄 Лицензия
 
-## How can I deploy this project?
+Proprietary - All rights reserved
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+## 🤝 Контакты
 
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Вопросы? Пишите: support@genegic.com
