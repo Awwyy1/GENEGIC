@@ -1,0 +1,4 @@
+project_id = "spigiyrsqaumwodrzklm"
+
+[functions.generate-site]
+verify_jwt = false
