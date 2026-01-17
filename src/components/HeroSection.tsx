@@ -1,16 +1,18 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap, Sparkles } from "lucide-react";
 
 const HeroSection = () => {
   const [prompt, setPrompt] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (prompt.trim()) {
-      console.log("Creating site with prompt:", prompt);
-      // Here would be the AI generation logic
+      // Navigate to generator with the prompt
+      navigate("/generator", { state: { initialPrompt: prompt } });
     }
   };
 
