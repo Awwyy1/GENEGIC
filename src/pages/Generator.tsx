@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Send, Copy, Download, Check, Loader2, ExternalLink, Code, Eye } from "lucide-react";
+import { ArrowLeft, Send, Copy, Download, Check, Loader2, ExternalLink, Code, Eye, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import { useGenerationLimit } from "@/hooks/useGenerationLimit";
+import { PaywallModal } from "@/components/PaywallModal";
 
 type Message = {
   role: "user" | "assistant";
@@ -22,8 +24,11 @@ const Generator = () => {
   const [showPreview, setShowPreview] = useState(false);
   const [copied, setCopied] = useState(false);
   const [hasAutoSent, setHasAutoSent] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  const { generationsLeft, isLimitReached, incrementUsage } = useGenerationLimit();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -44,6 +49,12 @@ const Generator = () => {
   const sendMessage = useCallback(async (messageText?: string) => {
     const textToSend = messageText || input;
     if (!textToSend.trim() || isLoading) return;
+
+    // Проверяем лимит генераций
+    if (isLimitReached) {
+      setShowPaywall(true);
+      return;
+    }
 
     const userMessage: Message = { role: "user", content: textToSend };
     const newMessages = [...messages, userMessage];
@@ -143,6 +154,9 @@ const Generator = () => {
         if (code) {
           setGeneratedCode(code);
           setShowPreview(true);
+          // Увеличиваем счетчик использованных генераций
+          incrementUsage();
+          toast.success(`Сайт создан! Осталось генераций: ${generationsLeft - 1}`);
         }
       }
     } catch (error) {
@@ -151,7 +165,7 @@ const Generator = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [input, isLoading, messages]);
+  }, [input, isLoading, messages, isLimitReached, incrementUsage, generationsLeft]);
 
   // Auto-send initial prompt if provided
   useEffect(() => {
@@ -212,8 +226,15 @@ const Generator = () => {
             </Link>
             <div className="h-6 w-px bg-border" />
             <span className="font-heading font-bold text-lg gradient-text">Генератор</span>
+            <div className="h-6 w-px bg-border" />
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
+              <Sparkles className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium">
+                {generationsLeft}/{3} генераций
+              </span>
+            </div>
           </div>
-          
+
           {generatedCode && (
             <div className="flex items-center gap-2">
               <Button
@@ -368,6 +389,9 @@ const Generator = () => {
           </motion.div>
         )}
       </div>
+
+      {/* Paywall Modal */}
+      <PaywallModal open={showPaywall} onOpenChange={setShowPaywall} />
     </div>
   );
 };
