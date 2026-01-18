@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import ThemeToggle from "./ThemeToggle";
 
 const Header = () => {
   return (
@@ -13,8 +14,8 @@ const Header = () => {
     >
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[hsl(175,80%,50%)] to-[hsl(200,90%,55%)] flex items-center justify-center">
-            <Sparkles className="w-5 h-5 text-background" />
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+            <Sparkles className="w-5 h-5 text-primary-foreground" />
           </div>
           <span className="text-xl font-bold text-foreground font-heading">GENEGIC</span>
         </Link>
@@ -34,11 +35,12 @@ const Header = () => {
           </a>
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
+          <ThemeToggle />
           <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
             Войти
           </Button>
-          <Button variant="hero" size="sm">
+          <Button variant="default" size="sm">
             Начать бесплатно
           </Button>
         </div>
