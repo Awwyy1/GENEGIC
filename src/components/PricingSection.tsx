@@ -1,19 +1,22 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import { Check, Coins } from "lucide-react";
 
 const plans = [
   {
     name: "Стартовый",
     price: "0",
     period: "навсегда",
-    description: "Идеально для первых экспериментов",
+    credits: "20 кредитов",
+    creditsHint: "≈ 1 сайт + 5 правок",
+    description: "Попробуйте возможности генератора бесплатно",
     features: [
-      "1 сайт",
+      "20 кредитов бесплатно",
+      "1 генерация = 10 кредитов",
+      "1 правка = 2 кредита",
       "Базовые шаблоны",
-      "Поддомен .generic.app",
-      "SSL-сертификат",
-      "Базовая аналитика"
+      "Поддомен .genegic.app",
+      "SSL-сертификат"
     ],
     cta: "Начать бесплатно",
     popular: false
@@ -22,15 +25,17 @@ const plans = [
     name: "Профессионал",
     price: "990",
     period: "/месяц",
-    description: "Для серьёзных проектов",
+    credits: "150 кредитов",
+    creditsHint: "≈ 10 сайтов или 75 правок",
+    description: "Для фрилансеров и небольших проектов",
     features: [
-      "Неограниченно сайтов",
+      "150 кредитов в месяц",
+      "Перенос неиспользованных кредитов",
       "Все премиум-шаблоны",
       "Собственный домен",
       "Приоритетная поддержка",
       "Расширенная аналитика",
-      "Интеграции с сервисами",
-      "Удаление бейджа"
+      "Удаление бейджа GENEGIC"
     ],
     cta: "Выбрать тариф",
     popular: true
@@ -39,13 +44,16 @@ const plans = [
     name: "Бизнес",
     price: "2990",
     period: "/месяц",
-    description: "Для команд и компаний",
+    credits: "500 кредитов",
+    creditsHint: "≈ 35 сайтов или 250 правок",
+    description: "Для агентств и команд",
     features: [
-      "Всё из Профессионала",
-      "До 10 участников",
-      "Совместная работа",
+      "500 кредитов в месяц",
+      "До 10 участников команды",
+      "Общий баланс кредитов",
+      "Совместная работа над проектами",
       "API-доступ",
-      "Белые метки",
+      "Белые метки (White Label)",
       "SLA 99.9%",
       "Персональный менеджер"
     ],
@@ -57,7 +65,7 @@ const plans = [
 const PricingSection = () => {
   return (
     <section id="pricing" className="py-24 relative">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[hsl(175,80%,50%,0.02)] to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.02] to-transparent" />
       
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
@@ -71,7 +79,7 @@ const PricingSection = () => {
             Простые и честные <span className="gradient-text">тарифы</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Начните бесплатно, масштабируйтесь когда будете готовы
+            Платите только за то, что используете. 1 генерация = 10 кредитов, 1 правка = 2 кредита
           </p>
         </motion.div>
 
@@ -85,12 +93,12 @@ const PricingSection = () => {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className={`relative rounded-2xl p-8 ${
                 plan.popular 
-                  ? "bg-gradient-to-b from-[hsl(175,80%,50%,0.1)] to-card border-2 border-primary/50" 
+                  ? "bg-gradient-to-b from-primary/10 to-card border-2 border-primary/50" 
                   : "glass"
               }`}
             >
               {plan.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-[hsl(175,80%,50%)] to-[hsl(200,90%,55%)] text-background text-sm font-semibold rounded-full">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-primary to-accent text-primary-foreground text-sm font-semibold rounded-full">
                   Популярный
                 </div>
               )}
@@ -100,11 +108,20 @@ const PricingSection = () => {
                 <p className="text-muted-foreground text-sm">{plan.description}</p>
               </div>
 
-              <div className="mb-6">
+              <div className="mb-4">
                 <span className="text-4xl font-bold">{plan.price === "0" ? "Бесплатно" : `${plan.price}₽`}</span>
                 {plan.price !== "0" && (
                   <span className="text-muted-foreground">{plan.period}</span>
                 )}
+              </div>
+
+              {/* Credits highlight */}
+              <div className="mb-6 p-3 rounded-lg bg-primary/10 border border-primary/20">
+                <div className="flex items-center gap-2 mb-1">
+                  <Coins className="w-4 h-4 text-primary" />
+                  <span className="font-semibold text-primary">{plan.credits}</span>
+                </div>
+                <span className="text-xs text-muted-foreground">{plan.creditsHint}</span>
               </div>
 
               <ul className="space-y-3 mb-8">
@@ -119,7 +136,7 @@ const PricingSection = () => {
               </ul>
 
               <Button 
-                variant={plan.popular ? "hero" : "heroOutline"} 
+                variant={plan.popular ? "default" : "outline"} 
                 className="w-full"
                 size="lg"
               >
